@@ -223,6 +223,26 @@ main {
   flex-direction: column;
 }
 
+/* Responsive Ad Display */
+.ad-desktop {
+  display: none;
+}
+
+.ad-mobile {
+  display: flex;
+}
+
+/* Show desktop ads on larger screens */
+@media (min-width: 768px) {
+  .ad-desktop {
+    display: flex;
+  }
+
+  .ad-mobile {
+    display: none;
+  }
+}
+
 .ad-label {
   font-size: 12px;
   text-transform: uppercase;

@@ -250,33 +250,21 @@ function renderHomePage() {
                         <!-- Movies will be dynamically inserted here -->
                     </div>
                     
-                    <!-- Ad Space Between Sections -->
-                    <div class="ad-container">
-                        <div class="ad-label">Advertisement</div>
-                        <script>
-  atOptions = {
-    'key' : '0fefc903143fb8800322abee3117ab93',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/0fefc903143fb8800322abee3117ab93/invoke.js"></script>
-                    </div>
+                 
                     
                     <!-- Anime Section -->
-                    <div class="section-header">
-                        <h2 class="section-title">Seasons Anime</h2>
-                        <a href="#" class="view-all">View All</a>
-                    </div>
-                    
-                    <div class="cards-grid" id="anime-grid">
-                        <!-- Anime will be dynamically inserted here -->
-                    </div>
+               
                 </div>
             `;
 
+                //  <div class="section-header">
+                //         <h2 class="section-title">Seasons Anime</h2>
+                //         <a href="#" class="view-all">View All</a>
+                //     </div>
+                    
+                //     <div class="cards-grid" id="anime-grid">
+                //         <!-- Anime will be dynamically inserted here -->
+                //     </div>
     mainContent.innerHTML = homeHTML;
     renderMovieCards();
     renderAnimeCards();
@@ -420,7 +408,7 @@ function renderMovieDetail(movieId) {
             e.preventDefault();
             navigateToHome();
         });
-
+        
         // Support Enter and Space keys for keyboard navigation
         backButton.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -503,7 +491,7 @@ function renderAnimeDetail(animeId) {
         appState.currentPage = 'home';
         renderHomePage();
     });
-
+    
     // Add keyboard support for back button
     backBtn.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -512,16 +500,16 @@ function renderAnimeDetail(animeId) {
             renderHomePage();
         }
     });
-};
+    };
 
-// Add event listeners to season cards
-const seasonCards = document.querySelectorAll('.season-card');
-seasonCards.forEach(card => {
-    card.addEventListener('click', () => {
-        const seasonIndex = parseInt(card.dataset.season);
-        renderSeasonEpisodes(animeId, seasonIndex);
+    // Add event listeners to season cards
+    const seasonCards = document.querySelectorAll('.season-card');
+    seasonCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const seasonIndex = parseInt(card.dataset.season);
+            renderSeasonEpisodes(animeId, seasonIndex);
+        });
     });
-});
 
 
 // Render Season Episodes Page
@@ -605,10 +593,10 @@ function renderSeasonEpisodes(animeId, seasonIndex) {
 // Improved navigation function with smooth transitions
 function navigateToHome() {
     const mainContent = document.getElementById('main-content');
-
+    
     // Add fade out animation
     mainContent.style.animation = 'pageTransitionOut 0.3s ease-in-out';
-
+    
     // Wait for animation to complete before rendering
     setTimeout(() => {
         appState.currentPage = 'home';
@@ -621,7 +609,7 @@ function navigateToHome() {
 function navigateToMovie(movieId) {
     const mainContent = document.getElementById('main-content');
     mainContent.style.animation = 'pageTransitionOut 0.3s ease-in-out';
-
+    
     setTimeout(() => {
         appState.currentPage = 'movie-detail';
         renderMovieDetail(movieId);
@@ -633,7 +621,7 @@ function navigateToMovie(movieId) {
 function navigateToAnime(animeId) {
     const mainContent = document.getElementById('main-content');
     mainContent.style.animation = 'pageTransitionOut 0.3s ease-in-out';
-
+    
     setTimeout(() => {
         appState.currentPage = 'anime-detail';
         renderAnimeDetail(animeId);
@@ -651,7 +639,7 @@ function addCardEventListeners() {
             const movieId = card.dataset.id;
             navigateToMovie(movieId);
         });
-
+        
         // Add keyboard support for card navigation (Enter key)
         card.setAttribute('tabindex', '0');
         card.setAttribute('role', 'button');
@@ -671,7 +659,7 @@ function addCardEventListeners() {
             const animeId = card.dataset.id;
             navigateToAnime(animeId);
         });
-
+        
         // Add keyboard support for card navigation (Enter key)
         card.setAttribute('tabindex', '0');
         card.setAttribute('role', 'button');
