@@ -498,3 +498,124 @@ footer {
   margin-bottom: 15px;
   color: #64748B;
 }
+
+/* PAGE TRANSITIONS AND ANIMATIONS */
+main#main-content {
+  animation: pageTransitionIn 0.4s ease-in-out;
+}
+
+@keyframes pageTransitionIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* BREADCRUMB ENHANCED STYLING */
+.breadcrumb a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.breadcrumb a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* BACK BUTTON IMPROVEMENTS */
+.breadcrumb a[id="back-to-home"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: var(--transition);
+  user-select: none;
+}
+
+.breadcrumb a[id="back-to-home"]:hover {
+  background-color: rgba(229, 9, 20, 0.2);
+  color: #ffffff;
+}
+
+.breadcrumb a[id="back-to-home"]:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* DETAIL PAGE HEADER ANIMATIONS */
+.movie-header {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.movie-poster {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.movie-info {
+  animation: slideInRight 0.6s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ENHANCED KEYBOARD NAVIGATION FOCUS STATES */
+.btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 8px rgba(229, 9, 20, 0.5);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  transform: scale(1.02);
+}
+
+.card[role="button"] {
+  cursor: pointer;
+}
+
+.card[role="button"]:active {
+  transform: scale(0.98);
+}

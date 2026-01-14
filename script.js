@@ -253,7 +253,16 @@ function renderHomePage() {
                     <!-- Ad Space Between Sections -->
                     <div class="ad-container">
                         <div class="ad-label">Advertisement</div>
-                        <div>Reserved for 300x250 banner ad</div>
+                        <script>
+  atOptions = {
+    'key' : '0fefc903143fb8800322abee3117ab93',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/0fefc903143fb8800322abee3117ab93/invoke.js"></script>
                     </div>
                     
                     <!-- Anime Section -->
@@ -359,14 +368,20 @@ function renderAnimeCards() {
 // Render Movie Detail Page
 function renderMovieDetail(movieId) {
     const movie = data.movies.find(m => m.id === parseInt(movieId));
-    if (!movie) return;
+    if (!movie) {
+        showError('Movie not found');
+        return;
+    }
+
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     const mainContent = document.getElementById('main-content');
 
     const movieDetailHTML = `
                 <div class="container">
                     <div class="breadcrumb">
-                        <a href="#" id="back-to-home">Home</a>
+                        <a href="#" id="back-to-home" role="button" tabindex="0" aria-label="Go back to home page">← Back to Home</a>
                         <span class="breadcrumb-separator">/</span>
                         <span>${movie.title}</span>
                     </div>
@@ -398,25 +413,41 @@ function renderMovieDetail(movieId) {
 
     mainContent.innerHTML = movieDetailHTML;
 
-    // Add event listener to back button
-    document.getElementById('back-to-home').addEventListener('click', (e) => {
-        e.preventDefault();
-        appState.currentPage = 'home';
-        renderHomePage();
-    });
+    // Add event listener to back button with keyboard support
+    const backButton = document.getElementById('back-to-home');
+    if (backButton) {
+        backButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateToHome();
+        });
+
+        // Support Enter and Space keys for keyboard navigation
+        backButton.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                navigateToHome();
+            }
+        });
+    }
 }
 
 // Render Anime Detail Page (Seasons)
 function renderAnimeDetail(animeId) {
     const anime = data.anime.find(a => a.id === parseInt(animeId));
-    if (!anime) return;
+    if (!anime) {
+        showError('Anime not found');
+        return;
+    }
+
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     const mainContent = document.getElementById('main-content');
 
     const animeDetailHTML = `
                 <div class="container">
                     <div class="breadcrumb">
-                        <a href="#" id="back-to-home">Home</a>
+                        <a href="#" id="back-to-home" role="button" tabindex="0" aria-label="Go back to home page">← Back to Home</a>
                         <span class="breadcrumb-separator">/</span>
                         <span>${anime.title}</span>
                     </div>
@@ -424,17 +455,19 @@ function renderAnimeDetail(animeId) {
                     <div class="movie-detail">
                         <div class="movie-header">
                             <div class="movie-poster">
-                                <img src="${anime.poster}" alt="${anime.title}" loading="lazy">
+                                <img src="${anime.poster}" alt="Poster for ${anime.title}" loading="lazy">
                             </div>
                             <div class="movie-info">
                                 <h1 class="movie-title">${anime.title}</h1>
                                 <div class="movie-meta">
                                     <span>${anime.year}</span>
                                     <span>${anime.seasons} Season${anime.seasons > 1 ? 's' : ''}</span>
+                                    <span class="movie-rating">⭐ ${anime.rating}/10</span>
                                 </div>
+                                <p class="movie-description">${anime.description}</p>
                                 
                                 <h3 class="mt-40 mb-20">Seasons:</h3>
-                                <div class="seasons-list" id="seasons-list">
+                                <div class="seasons-list" id="seasons-list" role="region" aria-label="Available seasons">
                                     <!-- Seasons will be dynamically inserted here -->
                                 </div>
                             </div>
@@ -451,6 +484,9 @@ function renderAnimeDetail(animeId) {
         const seasonCard = document.createElement('div');
         seasonCard.className = 'season-card';
         seasonCard.dataset.season = index;
+        seasonCard.role = 'button';
+        seasonCard.tabIndex = 0;
+        seasonCard.setAttribute('aria-label', `Season ${index + 1} with ${seasonData.episodes.length} episodes`);
 
         seasonCard.innerHTML = `
                     <h3 class="season-title">Season ${index + 1}</h3>
@@ -460,22 +496,33 @@ function renderAnimeDetail(animeId) {
         seasonsList.appendChild(seasonCard);
     });
 
-    // Add event listeners
-    document.getElementById('back-to-home').addEventListener('click', (e) => {
+    // Add event listeners to back button
+    const backBtn = document.getElementById('back-to-home');
+    backBtn.addEventListener('click', (e) => {
         e.preventDefault();
         appState.currentPage = 'home';
         renderHomePage();
     });
 
-    // Add event listeners to season cards
-    const seasonCards = document.querySelectorAll('.season-card');
-    seasonCards.forEach(card => {
-        card.addEventListener('click', () => {
-            const seasonIndex = parseInt(card.dataset.season);
-            renderSeasonEpisodes(animeId, seasonIndex);
-        });
+    // Add keyboard support for back button
+    backBtn.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            appState.currentPage = 'home';
+            renderHomePage();
+        }
     });
-}
+};
+
+// Add event listeners to season cards
+const seasonCards = document.querySelectorAll('.season-card');
+seasonCards.forEach(card => {
+    card.addEventListener('click', () => {
+        const seasonIndex = parseInt(card.dataset.season);
+        renderSeasonEpisodes(animeId, seasonIndex);
+    });
+});
+
 
 // Render Season Episodes Page
 function renderSeasonEpisodes(animeId, seasonIndex) {
@@ -553,6 +600,47 @@ function renderSeasonEpisodes(animeId, seasonIndex) {
 }
 
 // ============================================
+// NAVIGATION HELPERS
+// ============================================
+// Improved navigation function with smooth transitions
+function navigateToHome() {
+    const mainContent = document.getElementById('main-content');
+
+    // Add fade out animation
+    mainContent.style.animation = 'pageTransitionOut 0.3s ease-in-out';
+
+    // Wait for animation to complete before rendering
+    setTimeout(() => {
+        appState.currentPage = 'home';
+        renderHomePage();
+        mainContent.style.animation = 'pageTransitionIn 0.4s ease-in-out';
+    }, 300);
+}
+
+// Navigate to movie detail with smooth transition
+function navigateToMovie(movieId) {
+    const mainContent = document.getElementById('main-content');
+    mainContent.style.animation = 'pageTransitionOut 0.3s ease-in-out';
+
+    setTimeout(() => {
+        appState.currentPage = 'movie-detail';
+        renderMovieDetail(movieId);
+        mainContent.style.animation = 'pageTransitionIn 0.4s ease-in-out';
+    }, 300);
+}
+
+// Navigate to anime detail with smooth transition
+function navigateToAnime(animeId) {
+    const mainContent = document.getElementById('main-content');
+    mainContent.style.animation = 'pageTransitionOut 0.3s ease-in-out';
+
+    setTimeout(() => {
+        appState.currentPage = 'anime-detail';
+        renderAnimeDetail(animeId);
+        mainContent.style.animation = 'pageTransitionIn 0.4s ease-in-out';
+    }, 300);
+}
+
 // EVENT HANDLERS
 // ============================================
 function addCardEventListeners() {
@@ -561,8 +649,18 @@ function addCardEventListeners() {
     movieCards.forEach(card => {
         card.addEventListener('click', () => {
             const movieId = card.dataset.id;
-            appState.currentPage = 'movie-detail';
-            renderMovieDetail(movieId);
+            navigateToMovie(movieId);
+        });
+
+        // Add keyboard support for card navigation (Enter key)
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const movieId = card.dataset.id;
+                navigateToMovie(movieId);
+            }
         });
     });
 
@@ -571,8 +669,18 @@ function addCardEventListeners() {
     animeCards.forEach(card => {
         card.addEventListener('click', () => {
             const animeId = card.dataset.id;
-            appState.currentPage = 'anime-detail';
-            renderAnimeDetail(animeId);
+            navigateToAnime(animeId);
+        });
+
+        // Add keyboard support for card navigation (Enter key)
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const animeId = card.dataset.id;
+                navigateToAnime(animeId);
+            }
         });
     });
 }
