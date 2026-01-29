@@ -773,20 +773,19 @@ function handleSearch() {
     const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
     appState.searchQuery = searchQuery;
 
-    // Filter movies
+    // If query is empty, reset filters
     if (searchQuery === '') {
         appState.filteredMovies = [...data.movies];
         appState.filteredAnime = [...data.anime];
     } else {
-        appState.filteredMovies = data.movies.filter(movie =>
-            movie.title.toLowerCase().includes(searchQuery) ||
-            movie.year.toString().includes(searchQuery)
-        );
+        // Helper to build searchable text for an entry
+        const buildText = (entry) => {
+            const links = (entry.streamingLinks || []).map(l => `${l.platform} ${l.url}`).join(' ');
+            return `${entry.title} ${entry.year || ''} ${entry.rating || ''} ${entry.description || ''} ${links}`.toLowerCase();
+        };
 
-        appState.filteredAnime = data.anime.filter(anime =>
-            anime.title.toLowerCase().includes(searchQuery) ||
-            anime.year.toString().includes(searchQuery)
-        );
+        appState.filteredMovies = data.movies.filter(movie => buildText(movie).includes(searchQuery));
+        appState.filteredAnime = data.anime.filter(anime => buildText(anime).includes(searchQuery));
     }
 
     // Re-render content based on current page
@@ -810,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set up search with debounce
     const searchInput = document.getElementById('searchInput');
-    const debouncedSearch = debounce(handleSearch, 300);
+    const debouncedSearch = debounce(handleSearch, 150);
     searchInput.addEventListener('input', debouncedSearch);
 
     // Focus on search input
